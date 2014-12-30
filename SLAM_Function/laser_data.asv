@@ -1,0 +1,57 @@
+clc;
+clear all;
+close all;
+
+fid = fopen('laser.txt');
+alpha=linspace(-30,210,682);
+lastl=0;lastr=0;
+
+    %Gather Laser Data
+    dat=[];
+    for j=1:681
+        tline= fgets(fid);
+        tline=str2num(tline);
+        dat=[dat tline];
+    end
+    
+    %Feature Extraction
+    z=5;
+    featno=0;
+    while (z<675)
+    dat1=dat(z);
+    i1=z;
+    while (z<675)
+        dis=dat(z+5)-dat(z);
+        if abs(dis) < 0.3
+            z=z+5;
+            continue
+        end
+            dat2=dat(z-5);
+			X1 = dat1*100*cosd(alpha(i1));
+			Y1 = dat1*100*sind(alpha(i1));
+			X2 = dat2*100*cosd(alpha(z-5));
+			Y2 = dat2*100*sind(alpha(z-5));
+			length=sqrt((X2-X1)^2+(Y2-Y1)^2);
+			centerx=(X1+X2)/200.0;
+			centery=(Y1+Y2)/200.0;
+ 			if length >= 48 && length <=51
+                 if centerx < 0
+                     z=z+5;
+                     break;
+                 end
+                 centx=centerx;
+                 centy=centery;
+                 len=length;
+                 centx=centx+X;
+                 centy=centy+Y;
+                 featno=1;
+            end
+			z=z+5;
+			break
+    end
+    end
+     if featno==0
+         continue
+     end
+centx
+centy

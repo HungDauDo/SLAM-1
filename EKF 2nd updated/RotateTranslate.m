@@ -1,0 +1,8 @@
+function re_now=RotateTranslate(Xnow,Dtxy)
+siz=size(Dtxy);
+for i=1:siz(2)
+    Rpx(i)=Dtxy(1,i)*cos(delT)-Dtxy(2,i)*sin(delT)+Xr;
+    Rpy(i)=Dtxy(1,i)*sin(delT)+Dtxy(2,i)*cos(delT)+Yr;
+end
+re_now=[Rpx;Rpy];
+end

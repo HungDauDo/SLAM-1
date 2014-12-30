@@ -1,0 +1,8 @@
+function Jmeas=Jac_meas(Xnow,Gas_re) % Measurement model Jacobian
+r=sqrt((Xnow(1)-Gas_re(1))^2+);
+Jmeas=[(Xnow(1)-Gas_re(1,i))/Zmod(1,i) (Xnow(2)-Gas_re(2,i))/Zmod(1,i) 0;(Gas_re(2,i)-Xnow(2))/Zmod(1,i)^2 (Gas_re(1,i)-Xnow(1))/Zmod(1,i)^2 -1];
+end
+if isempty(Jmeas)
+    Jmeas=[];
+end
+end

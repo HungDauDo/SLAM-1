@@ -1,0 +1,46 @@
+fid = fopen('laser.txt');
+alpha=linspace(-30,210,682);
+lastl=0;lastr=0;
+X=0;Y=0;
+for i=1:120
+    theta=abs((xpos(i)-ypos(i)))*.138/1000;
+    theta=theta/.0086344;
+    while(theta>360)
+        theta=theta-360;
+    end
+    theta=90-theta;
+    lsamp=xpos(i);rsamp=ypos(i);
+    lticks=lsamp-lastl;
+    rticks=rsamp-lastr;
+    lastl=lsamp;
+    lastr=rsamp;
+    r=(lticks+rticks)*.138/2/1000;
+    x=r*cosd(theta);
+    y=r*sind(theta);
+    X=X+x;
+    Y=Y+y;
+    plot(X,Y);
+    hold on
+ X;
+ Y;
+ a1=[];
+    for j=1:681
+        tline= fgets(fid);
+        for ie=1:length(tline)-1
+            a1(ie)=tline(ie);
+        end
+        a=str2num(a1);
+        for ie=1:length(a1)
+            a1(ie)=' ';
+        end
+       %alpha=alpha+(90-theta);
+        ex=a*cosd(alpha(j)-(90-theta));
+        why=a*sind(alpha(j)-(90-theta));
+       
+        plot(X+ex,Y+why);
+        hold on
+        
+    end
+    pause(0.01)
+    
+end

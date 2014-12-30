@@ -1,0 +1,13 @@
+function Zmod=GetObsModel(Xnow,Past_re)
+siz=size(Past_re);
+if ~isempty(Past_re)
+    for i=1:siz(2)
+        R_Mod(i)=sqrt((Xnow(1)-Past_re(1,i))^2+(Xnow(2)-Past_re(2,i))^2);
+        Th_Mod(i)=atan2(Past_re(2,i)-Xnow(2),Past_re(1,i))+delT;
+    end
+else
+    Zmod=[];
+end
+end
+
+

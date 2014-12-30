@@ -1,0 +1,114 @@
+clear all;
+close all;
+tic;
+load laser_data;
+d=laser;
+N=681;
+Nd=length(d)/N;
+in=1;
+for in=1:Nd
+    rho=d(1+(in-1)*N:N+(in-1)*N)';
+    res=(210-(-30))/680;
+    t=-30:res:210;
+    for i=1:length(t)
+        theta(i)=t(end-(i-1));
+    end
+    the_rad=theta*pi/180;
+    x=rho.*sin(the_rad);
+    y=rho.*cos(the_rad);
+    
+    %figure(2)
+    %plot(x,y,'.','MarkerSize',1);
+%normalize
+xmin=min(x);
+xmax=max(x);
+Slopex=1/(xmax-xmin);
+
+ymin=min(y);
+ymax=max(y);
+Slopey=1/(ymax-ymin);
+
+x2=x-xmin;
+y2=y-ymin;
+
+nx=x2*Slopex;
+ny=y2*Slopey;
+
+%figure(3);plot(round(nx*100),round(ny*100),'r*');
+%toc
+rx=round(nx*200)+1;
+ry=round(ny*200)+1;
+I=zeros(201,201);
+
+for ixy=1:length(rx)
+I(rx(ixy),ry(ixy))=1;
+end
+
+%I=imrotate(I,90);
+%figure(4);imshow(I)
+%se=[1 1;1 1]
+%I=imdilate(I,se);imshow(I);
+
+inter=[0 0 0 0 0;
+       0 -1 -1 -1 -1;
+       0 -1 1 1 1;
+       0 -1 1 -1 -1;
+       0 -1 1 -1 0];
+%    inter=(inter-0.5)/0.5;
+bw1 = bwhitmiss(I,inter);
+
+%bw1=imrotate(bw1,-90);
+[xm1,ym1]=find(bw1);
+
+inter=[0 -1 1 -1 0;0 -1 1 -1 -1;0 -1 1 1 1;0 -1 -1 -1 -1;0 0 0 0 0];
+%inter=(inter-0.5)/0.5
+bw2 = bwhitmiss(I,inter);
+%bw2=imrotate(bw2,-90);
+[xm2,ym2]=find(bw2);
+
+inter=[0 -1 1 -1 0;-1 -1 1 -1 0;1 1 1 -1 0;-1 -1 -1 -1 0;0 0 0 0 0];
+%inter=(inter-0.5)/0.5
+bw3 = bwhitmiss(I,inter);
+%bw3=imrotate(bw3,-90);
+[xm3,ym3]=find(bw3);
+
+inter=[0 0 0 0 0;-1 -1 -1 -1 0;1 1 1 -1 0;-1 -1 1 -1 0;0 -1 1 -1 0];
+%inter=(inter-0.5)/0.5
+bw4 = bwhitmiss(I,inter);
+%bw4=imrotate(bw4,-90);
+[xm4,ym4]=find(bw4);
+
+bw=bw1|bw2|bw3|bw4;
+%subplot(1,2,1);imshow(I);
+%subplot(1,2,2);imshow(bw1);
+
+
+
+xm=[xm1;xm2;xm3;xm4];
+ym=[ym1;ym2;ym3;ym4];
+tol=20;
+if isempty(xm)
+    
+else
+[xm,ym]=unique_tol(xm,ym,tol);
+end
+
+figure(5);
+plot(rx,ry,'.',xm,ym,'rO');
+% plot(x,y,'.');
+xm=(xm-1)/200;
+ym=(ym-1)/200;
+
+xm=xm/Slopex;
+ym=ym/Slopey;
+
+xm=xm+xmin;
+ym=ym+ymin;
+
+% figure(5);
+% plot(x,y,'.',xm,ym,'rO');
+% hold on;
+toc
+pause(0.5);
+%hold on;
+end
